@@ -4,9 +4,11 @@ angular.module('MtGFinder', ['MtGFinder.services'])
 
 	$scope.searchCard = function(card) {
 		console.log(card);
-		$scope.query = card;
+		//$scope.query = card;
 		$scope.card = '';
-		$scope.result = Cards.cardSearch(card);
+		Cards.cardSearch(card).then(function(data) {
+			$scope.result = data;
+		});
 
 
 	}
