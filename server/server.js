@@ -1,7 +1,13 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+//Remember to always kill all databases before trying to turn
+//one on.
+var MongoClient = require('mongodb').MongoClient
+  , assert = require('assert');
 
+// Connection URL
+var url = 'mongodb://localhost:27017/myproject';
 // app.all('/*', function(req, res, next) {
 //     res.header('Access-Control-Allow-Origin', '*');
 //     res.header('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With');
@@ -21,7 +27,26 @@ app.get('/', function(req,res) {
 
 app.post('/search', function(req,res) {
 	console.log('THIS IS THE REQUEST DATA', req)
-	res.send(req.body.data);
+
+	var manyCards = function(db, callback) {
+		var collection = db.collection('cards');
+		collection.insertOne({query: req.body.data}, function(err,result) {
+			collection.find({}).toArray(function(err,cards) {
+				callback(cards);
+			})
+		}) 
+	}
+  MongoClient.connect(url, function(err, db) {
+  console.log("Connected successfully to server");
+	manyCards(db,function(data) {
+		console.log('Here I am', data);
+		res.status(201).send(data);
+	})
+});
+
+
+
+
 
 });
 
