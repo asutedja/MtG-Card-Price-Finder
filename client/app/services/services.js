@@ -2,6 +2,7 @@ angular.module('MtGFinder.services', [])
 .factory('Cards', function($http) {
 
 	var cardSearch = function(query) {
+		// console.log('I made it here', query)
 		return $http({
 			method: 'POST',
 			url: '/search',
