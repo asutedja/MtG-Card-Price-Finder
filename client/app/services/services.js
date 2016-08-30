@@ -1,10 +1,11 @@
 angular.module('MtGFinder.services', [])
 .factory('Cards', function($http) {
 
-	var cardSearch = function(query) {
+	var cardSearch = function(query,set) {
 		// console.log('I made it here', query)
 		var data = {
-			data: query
+			name: query,
+			set: set
 		};
 		// return $http.get('http://127.0.0.1:3000/')
 		// 	.then(function(data) {

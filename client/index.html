@@ -16,7 +16,8 @@
 		
 
 		<input ng-model='card'>
-		<button ng-click='searchCard(card)'>Search</button>
+		<input ng-model='set'>
+		<button ng-click='searchCard(card,set)'>Search</button>
 		<div>{{ query }}</div>
 		<div>{{ result }}</div>
 	</div>

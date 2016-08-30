@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/asutedja/MtG-Card-Price-Finder/issues"
   },
-  "homepage": "https://github.com/asutedja/MtG-Card-Price-Finder#readme"
+  "homepage": "https://github.com/asutedja/MtG-Card-Price-Finder#readme",
+  "dependencies": {
+    "request": "^2.74.0"
+  }
 }
