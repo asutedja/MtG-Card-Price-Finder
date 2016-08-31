@@ -9,14 +9,17 @@ var MongoClient = require('mongodb').MongoClient
   , assert = require('assert');
 var mongoose = require('mongoose');
 
+var url = 'mongodb://localhost:27017/myproject';
+mongoose.connect(url);
+
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
   // we're connected!
+  console.log('Connected to DB');
 });
 
 // Connection URL
-var url = 'mongodb://localhost:27017/myproject';
 // app.all('/*', function(req, res, next) {
 //     res.header('Access-Control-Allow-Origin', '*');
 //     res.header('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With');
@@ -31,17 +34,38 @@ var cardSchema = mongoose.Schema({
 
 var Card = mongoose.model('Card', cardSchema);
 
-var timeout = function(i,time) {
+var cardcount = 0;
+
+var timeout = function(i, time) {
 	setTimeout(function() {
 	  request('https://api.deckbrew.com/mtg/cards?page=' + i ,function(err,res,body) {
-	  	console.log(body);
-	  });		
+	  	var d = JSON.parse(body)
+	  		for(var j=0; j<Object.keys(d).length;j++) {
+			  //console.log(d);
+			  Card.create({
+					mid: d[j].editions[0].multiverse_id,
+					name: d[j].name,
+					edition: d[j].editions[0].set_id
+				})
+			  cardcount++; 
+			  console.log('Card Added', cardcount, 'The page has this many cards: ' ,Object.keys(d).length)
+	  		}
+	  });
 	}, time);
+} 
+var checkDB = function() {
+	console.log('Getting Database ')
+	for(var i = 1, time = 0; i<165; i++, time+=500) {
+		timeout(i, time);	
+	} 
 }
 
-for(var i = 1, time = 0; i<165; i++, time+=50) {
-	timeout(i, time);
-} 
+Card.findOne( {}, function (err, result) {
+    if (err) { console.log(err)}
+    if (!result) {
+        checkDB();
+    }
+})
 
 var serverGet = function(url, callback) {
 	https.get(url, function(key) {
@@ -53,8 +77,11 @@ var serverGet = function(url, callback) {
 			token = Buffer.concat(token).toString();
 			callback(JSON.parse(token));
 		})
+
 	})
 };
+
+
 
 
 
@@ -78,17 +105,19 @@ app.get('/', function(req,res) {
 
 app.post('/search', function(req,res) {
 	//console.log('THIS IS THE REQUEST DATA', req)
-	 
+	   
 	
 	serverGet('https://www.echomtg.com/api/user/auth/?email=andrew.sutedja@gmail.com&password=tropius7', function(api) {
 		var token = api.token;
-		console.log('api token:', token);
-		serverGet('https://api.deckbrew.com/mtg/cards?name=' + req.body.name + '&set=' + req.body.set, function(data) {
+		console.log('Generating api token');
+		Card.find({name: req.body.name}, function(err,data) {
+			//serverGet('https://api.deckbrew.com/mtg/cards?name=' + req.body.name + '&set=' + req.body.set, function(data) {
 			//console.log(data);
-			serverGet('https://www.echomtg.com/api/inventory/add/mid=' + data[0].editions[0].multiverse_id + '&auth=' + token, function() {
-				serverGet("https://www.echomtg.com/api/inventory/view/start=0&limit=100&search=" + data[0].name + '&set_code=' + data[0].editions[0].set_id + '&auth=' + token,
+			//addCard(data);
+			serverGet('https://www.echomtg.com/api/inventory/add/mid=' + data[0].mid + '&auth=' + token, function() {
+				serverGet("https://www.echomtg.com/api/inventory/view/start=0&limit=100&search=" + data[0].name + '&set_code=' + data[0].edition + '&auth=' + token,
 				function(result) {
-					console.log(result);
+					//console.log(result);
 					serverGet('https://www.echomtg.com/api/inventory/remove/inventory_id=' + result.items[0].inventory_id + '&auth=' + token, function() {
 						res.status(201).send(result);						
 					})

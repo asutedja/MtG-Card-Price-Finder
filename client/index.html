@@ -10,16 +10,32 @@
 	MtG Price Card Finder	
 	</title>
 </head>
-<body  ng-app='MtGFinder'>
+<style>
+	.main {text-align:center}
+	.image {
+	 float:right;
+    position: relative;
+    width:  200px;
+    height: 300px;
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+    background-size:     cover;}
+</style>
+<body  class ='main' ng-app='MtGFinder'>
+	<h1 class='main'> MtG Card Price Finder</h1>
 
 	<div  class ='card-container' ng-controller='MtGController'>
 		
 
 		<input ng-model='card'>
-		<input ng-model='set'>
-		<button ng-click='searchCard(card,set)'>Search</button>
+		<button ng-click='searchCard(card)'>Search</button>
 		<div>{{ query }}</div>
-		<div>{{ result }}</div>
+		<div ng-repeat='item in result track by $index'>
+			<div class ='main'>{{ item.message }}
+				<span ><img class='image' ng-src='{{item.image}}'></img></span>
+
+			</div>
+		</div>
 	</div>
 
 </body>
