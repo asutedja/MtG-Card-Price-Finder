@@ -111,10 +111,10 @@ app.post('/search', function(req,res) {
 		var token = api.token;
 		console.log('Generating api token');
 		Card.find({name: req.body.name}, function(err,data) {
-			//serverGet('https://api.deckbrew.com/mtg/cards?name=' + req.body.name + '&set=' + req.body.set, function(data) {
+			// serverGet('https://api.deckbrew.com/mtg/cards?name=' + req.body.name + '&set=' + req.body.set, function(data) {
 			//console.log(data);
 			//addCard(data);
-			serverGet('https://www.echomtg.com/api/inventory/add/mid=' + data[0].mid + '&auth=' + token, function() {
+			serverGet('https://www.echomtg.com/api/inventory/add/mid=' +  data[0].mid + '&auth=' + token, function() {
 				serverGet("https://www.echomtg.com/api/inventory/view/start=0&limit=100&search=" + data[0].name + '&set_code=' + data[0].edition + '&auth=' + token,
 				function(result) {
 					//console.log(result);

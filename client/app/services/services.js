@@ -1,7 +1,7 @@
 angular.module('MtGFinder.services', [])
 .factory('Cards', function($http) {
 
-	var cardSearch = function(query,set) {
+	var cardSearch = function(query, set) {
 		// console.log('I made it here', query)
 		var data = {
 			name: query,

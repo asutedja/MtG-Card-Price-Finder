@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<link href="https://fonts.googleapis.com/css?family=Abel" rel="stylesheet">
 	 <script src="bower_components/angular/angular.js"></script>
 	 <script src="bower_components/angular-route/angular-route.js"></script>
 	 
@@ -11,30 +12,44 @@
 	</title>
 </head>
 <style>
-	.main {text-align:center}
+	body {
+		background: #FFEBBD;
+		font-family: 'Abel', sans-serif;
+	}
+	.main {text-align:center;}
 	.image {
-	 float:right;
+
     position: relative;
-    width:  200px;
-    height: 300px;
+    float: left;
+    width:  100px;
+    height: 150px;
     background-position: 50% 50%;
     background-repeat:   no-repeat;
     background-size:     cover;}
-</style>
-<body  class ='main' ng-app='MtGFinder'>
-	<h1 class='main'> MtG Card Price Finder</h1>
 
-	<div  class ='card-container' ng-controller='MtGController'>
+    .image:hover {
+    	width:200px;
+    	height:300px;
+
+    }
+    .card{
+  float: left ;
+  width: 20% ;
+}
+</style>
+<body   class='main' ng-app='MtGFinder'>
+	<h1> MtG Card Price Finder</h1>
+
+	<div  ng-controller='MtGController'>
 		
 
-		<input ng-model='card'>
-		<button ng-click='searchCard(card)'>Search</button>
+		<div>Name: <input ng-model='card'></div>
+		<button  ng-click='searchCard(card)'>Search</button>
 		<div>{{ query }}</div>
 		<div ng-repeat='item in result track by $index'>
-			<div class ='main'>{{ item.message }}
-				<span ><img class='image' ng-src='{{item.image}}'></img></span>
+			<div class ='card'>{{ item.message }} <a ng-href="{{item.url}}">Buy here</a></div>
+			<div><img class='image' ng-src='{{item.image}}'></img></div>
 
-			</div>
 		</div>
 	</div>
 
